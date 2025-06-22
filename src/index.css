@@ -1,1 +1,14 @@
 @import "tailwindcss";
+
+@layer base {
+  section {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+}

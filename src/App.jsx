@@ -1,34 +1,58 @@
-import { useEffect } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ScrollSmoother } from "gsap/ScrollSmoother";
+import ScrollFloat from "./components/scroll_float";
 
-function App() {
-  useEffect(() => {
-    const box = document.querySelector(".box");
-    gsap.fromTo(
-      box,
-      { x: 0, opacity: 0 },
-      {
-        x: 100,
-        opacity: 1,
-        duration: 2,
-        ease: "power1.inOut",
-        onComplete: () => {
-          console.log("Animation complete!");
-        },
-      }
-    );
+gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+
+export default function App() {
+  const wrapperRef = useRef(null);
+  const contentRef = useRef(null);
+  useLayoutEffect(() => {
+    const smoother = ScrollSmoother.create({
+      wrapper: wrapperRef.current,
+      content: contentRef.current,
+      smooth: 2,
+      normalizeScroll: true,
+      effects: true,
+    });
+    ScrollTrigger.refresh();
+    return () => smoother.kill();
   }, []);
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1 className="text-3xl font-bold underline">
-          Hello, GSAP with Tailwind CSS!
-        </h1>
-        <div className="box bg-blue-500 w-32 h-32 mt-8 rounded-lg shadow-lg"></div>
-      </header>
+    <div id="smooth-wrapper" ref={wrapperRef} style={{ height: "100vh" }}>
+      <div id="smooth-content" ref={contentRef}>
+        <section id="home">
+          <h1>Dandee Design</h1>
+        </section>
+
+        <section id="about">
+          <ScrollFloat
+            scrollContainerRef={wrapperRef}
+            animationDuration={1}
+            ease="back.inOut(3)"
+            scrollStart="center bottom+=50%"
+            scrollEnd="bottom bottom-=40%"
+            stagger={0.05}
+          >
+            About me!
+          </ScrollFloat>
+        </section>
+
+        <section id="skills">
+          <h1>These Are My Strengths</h1>
+        </section>
+
+        <section id="projects">
+          <h1>These Are My Results</h1>
+        </section>
+
+        <section id="contact">
+          <h1>Available Anytime</h1>
+        </section>
+      </div>
     </div>
   );
 }
-
-export default App;
